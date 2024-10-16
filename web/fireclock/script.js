@@ -1,13 +1,42 @@
 /* script.js */
+
+var theme = "light";
+
 function onload_func()
 {
+    if(localStorage.getItem('theme') === "dark")
+    {
+        theme = "dark";
+        document.body.classList.toggle('night-mode');
+    }
+
     var date = new Date();
     document.getElementById('current-date').valueAsDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)); // https://stackoverflow.com/questions/13646446/javascript-date-tojson-produces-a-date-which-has-wrong-hours-and-minutes
-    document.getElementById('start-date').valueAsDate = new Date("2022-07-01");
-    document.getElementById('end-date').valueAsDate = new Date("2030-01-01");
-    document.getElementById('holiday-per-year').value = 9;
-    document.getElementById('pto-per-year').value = 22;
-    document.getElementById('sick-per-year').value = 18;
+
+    if(localStorage.getItem('start-date') !== null)
+        document.getElementById('start-date').valueAsDate = new Date(localStorage.getItem('start-date'));
+    else
+        document.getElementById('start-date').valueAsDate = new Date("2022-07-01");
+
+    if(localStorage.getItem('end-date') !== null)
+        document.getElementById('end-date').valueAsDate = new Date(localStorage.getItem('end-date'));
+    else
+        document.getElementById('end-date').valueAsDate = new Date("2030-01-01");
+
+    if(localStorage.getItem('holiday-per-year') !== null)
+        document.getElementById('holiday-per-year').value = localStorage.getItem('holiday-per-year');
+    else
+        document.getElementById('holiday-per-year').value = 9;
+
+    if(localStorage.getItem('pto-per-year') !== null)
+        document.getElementById('pto-per-year').value = localStorage.getItem('pto-per-year');
+    else
+        document.getElementById('pto-per-year').value = 22;
+
+    if(localStorage.getItem('sick-per-year') !== null)
+        document.getElementById('sick-per-year').value = localStorage.getItem('sick-per-year');
+    else
+        document.getElementById('sick-per-year').value = 18;
 
     calc();
 }
@@ -116,5 +145,20 @@ function calc() {
 }
 
 document.getElementById('night-mode-toggle').addEventListener('click', function() {
+    if(theme === "light")
+        theme = "dark";
+    else if(theme === "dark")
+        theme = "light";
+    else
+        console.log("theme wtf: " + theme);
     document.body.classList.toggle('night-mode');
+});
+
+document.getElementById('save-parameters').addEventListener('click', function() {
+    localStorage.setItem('start-date', document.getElementById('start-date').valueAsDate.toISOString());
+    localStorage.setItem('end-date', document.getElementById('end-date').valueAsDate.toISOString());
+    localStorage.setItem('holiday-per-year', document.getElementById('holiday-per-year').value);
+    localStorage.setItem('pto-per-year', document.getElementById('pto-per-year').value);
+    localStorage.setItem('sick-per-year', document.getElementById('sick-per-year').value);
+    localStorage.setItem('theme', theme);
 });
