@@ -38,6 +38,11 @@ function onload_func()
     else
         document.getElementById('sick-per-year').value = 18;
 
+    if(localStorage.getItem('wfh-per-week') !== null)
+            document.getElementById('wfh-per-week').value = localStorage.getItem('wfh-per-week');
+    else
+        document.getElementById('wfh-per-week').value = 1;
+
     calc();
 }
 
@@ -107,14 +112,26 @@ function get_sick()
     return Math.floor(((days_remaining() - weekend_days() - get_holiday()) * per_day));
 }
 
+function get_wfh_fraction()
+{
+    var per_week = parseInt(document.getElementById("wfh-per-week").value);
+    per_week = Math.max(per_week, 0);
+    per_week = Math.min(per_week, 5);
+    return per_week / 5;
+}
+
 function calc() {
     const tot = total_days();
     const daysPassed = days_passed()
     const weekenddays = weekend_days();
     const ptoDays = get_pto();
     const holidaysDays = get_holiday();
+    const weekendsPlusHolidays = weekenddays + holidaysDays;
     const sickDays = get_sick();
     const workDays = Math.max(0, tot - (daysPassed + weekenddays + ptoDays + holidaysDays + sickDays));
+    const wfhFraction = get_wfh_fraction();
+    const workDaysAtHome = Math.floor(workDays * wfhFraction);
+    const workDaysAtOffice = workDays - workDaysAtHome;
     const daysPassedPercentage = (daysPassed / tot) * 100;
     const weekendsPercentage = (weekenddays / tot) * 100;
     const ptoPercentage = (ptoDays / tot) * 100;
@@ -135,11 +152,12 @@ function calc() {
     document.getElementById('percentage-sick').textContent = `${Math.round(sickPercentage)}%`;
     document.getElementById('percentage-work').textContent = `${Math.round(workDaysPercentage)}%`;
 
-    document.getElementById('days-passed').textContent = daysPassed;
-    document.getElementById('weekends-and-holidays').textContent = weekenddays + holidaysDays;
-    document.getElementById('pto').textContent = ptoDays;
-    document.getElementById('sick').textContent = sickDays;
-    document.getElementById('work').textContent = workDays;
+    document.getElementById('days-passed').textContent = daysPassed + " passed";
+    document.getElementById('weekends-and-holidays').textContent = weekendsPlusHolidays + " weekends and holidays";
+    document.getElementById('pto').textContent = ptoDays + " pto";
+    document.getElementById('sick').textContent = sickDays + " sick";
+    document.getElementById('work').setAttribute('style', 'white-space: pre;');
+    document.getElementById('work').textContent = workDays + " work \r\n(" + workDaysAtOffice + " office, " + workDaysAtHome + " home)";
 
     document.getElementById('ttt').innerHTML = "Time till target: " + days_remaining() + " days";
 }
