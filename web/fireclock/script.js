@@ -178,5 +178,6 @@ document.getElementById('save-parameters').addEventListener('click', function() 
     localStorage.setItem('holiday-per-year', document.getElementById('holiday-per-year').value);
     localStorage.setItem('pto-per-year', document.getElementById('pto-per-year').value);
     localStorage.setItem('sick-per-year', document.getElementById('sick-per-year').value);
+    localStorage.setItem('wfh-per-week', document.getElementById('wfh-per-week').value);
     localStorage.setItem('theme', theme);
 });
