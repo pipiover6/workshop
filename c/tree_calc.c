@@ -137,7 +137,7 @@ int main()
     printf("this is NOT_F:\n");
     tree_print(NOT_F);
     printf("this is NOT_NOT:\n");
-    tree_print(NOT_F);
+    tree_print(NOT_NOT);
 
     //printf("destroy F\n");
     tree_destroy(F);
